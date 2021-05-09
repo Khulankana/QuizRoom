@@ -14,7 +14,7 @@ export default function Showcase() {
             <div>
                   <section className="home-articles py-2">
                          <div className="container">
-                              <h2>Тестийн ангилал</h2>
+                              <h2>Онцлог, давуу тал</h2>
                               <div className="bottom-line"></div>
                               <div className="article-container">
                                     <article className="card">

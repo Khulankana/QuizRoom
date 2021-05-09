@@ -5,7 +5,8 @@ import Home from '../Home';
 import CreateTestPage from '../CreateTest';
 import Register from '../Register';
 import Category from '../CategoryPage';
-import AnswerQuiz from '../AnswerQuiz'
+import AnswerQuiz from '../AnswerQuiz';
+import AfterLogin from '../AfterLogin'
 
 export default function App() {
       return(
@@ -16,6 +17,7 @@ export default function App() {
                         <Route path='/register' component={Register}/>
                         <Route path='/category' component={Category}/>
                         <Route path='/test' component={AnswerQuiz}/>
+                        <Route path='/login' component={AfterLogin}/>
                   </Switch>
             </Router>
       );

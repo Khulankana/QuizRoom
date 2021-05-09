@@ -1,14 +1,14 @@
 import React from 'react';
 
-import Navbar from '../../components/Navbar'
-import Register from '../../components/Register'
+import Logo from '../../components/Navbar/logo'
+import UserForm from '../../components/UserForm'
 import Footer from '../../components/Footer'
 
 export default function Registration() {
       return(
            <div>
-                 <Navbar />
-                 <Register />
+                 <Logo />
+                 <UserForm />
                  <Footer />
            </div>
       );

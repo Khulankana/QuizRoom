@@ -1,14 +1,16 @@
 import React from 'react';
 
 import Logout from '../../components/Navbar/logout'
-import Quiz from '../../components/Quiz'
+import Showcase from '../../components/Showcase'
+import Categories from '../../components/Categories'
 import Footer from '../../components/Footer'
 
-export default function AnswerQuiz() {
+export default function Home() {
       return(
            <div>
                  <Logout />
-                 <Quiz />
+                 <Showcase />
+                 <Categories />
                  <Footer />
            </div>
       );

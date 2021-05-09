@@ -33,13 +33,29 @@ function CustomDialogContent() {
                                     width:"24rem", 
                                     height:"2.4rem", 
                                     padding:"0.6rem", 
-                                    marginBottom:"1rem"
                               }}
                         onChange={(e) => {
                               setValue(e.target.value);
                         }}
                         />
-                         <br />
+                         <button type="submit" 
+                          style={{
+                              width: "20rem",
+                              border: "none",
+                               color:"#1B456B", 
+                               margin:"2rem auto",
+                              fontSize:"1rem",
+                                 backgroundColor:"#fff",
+                                 marginTop: "1rem",
+                                 marginBottom: "0.2rem"
+                              }}
+                        onClick={() => {
+                              dialog.close(value);
+                        }}>
+                        Нэвтрэх нэр, нууц үгээ мартсан ...
+                        </button>
+                        <div style={{height: "0.5px", width: "16rem", backgroundColor:"grey", margin: "0 auto"}}></div>
+                        <br />
                          <button type="submit"
                           className="btn"  
                           style={{
@@ -47,7 +63,8 @@ function CustomDialogContent() {
                                color:"#fff", 
                                margin:"2rem auto",
                                 width:"8rem",
-                                 fontSize:"1rem"
+                                 fontSize:"1rem",
+                                 marginLeft: "16rem"
                               }}
                         onClick={() => {
                               dialog.close(value);

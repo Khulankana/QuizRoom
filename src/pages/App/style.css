@@ -61,6 +61,13 @@ h4 {
   margin: 0 auto;
 }
 
+.container-fluid {
+  max-width: 1300px;
+  padding: 0 3rem;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
 .category {
   display: inline-block;
   color: #fff;
@@ -131,6 +138,13 @@ h4 {
 }
 
 .card {
+  background: #fff;
+  padding: 1rem;
+}
+
+.card-temp {
+  width: var(--max-width);
+  height: "800px";
   background: #fff;
   padding: 1rem;
 }
@@ -241,13 +255,15 @@ h4 {
 
 .main-nav ul li a.register,
 .main-nav ul li a.logout,
-.quiz-create ul li a .next {
+.quiz-create ul li a .next,
+.quiz-create .add {
   background: var(--primary-color);
   color: #fff;
   border-radius: 15px;
 }
 
 .main-nav ul li a.login,
+.home-content .login,
 .quiz-create ul li a .finish {
   color: var(--primary-color);
   background: #fff;
@@ -385,6 +401,36 @@ h4 {
 
 .grid > div {
   padding: 20px 0;
+}
+
+.grid-row {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-row > div {
+  height: 600px;
+  padding: 20px 0;
+}
+
+.grid-row > div:first-child {
+  border-right: 1px grey solid;
+}
+
+.grid-row-same {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-row-same > div button {
+  width: 240px;
+  height: 200px;
+  padding: 20px 0;
+  margin-bottom: 2rem;
 }
 
 //Footer
