@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "../../pages/App/style.css";
 import { UserContext } from "../../contexts/UserContext";
+import { Alert } from "react-st-modal";
 
 export default function NewUserForm() {
   const ctx = useContext(UserContext);
@@ -12,19 +13,27 @@ export default function NewUserForm() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
 
+  const history = useHistory();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
-    if (password != passwordConfirm) {
-      setError("Нууц үгээ зөв давтаач ээ!");
+    if (password !== passwordConfirm) {
+      setError("Нууц үгээ зөв давтана уу!");
       return;
     }
+
     console.log(name, email, password);
     ctx.addUser(name, email, password);
     setName("");
     setEmail("");
     setPassword("");
+    setPasswordConfirm("");
+
+    let path = `/login`;
+    history.push(path);
   };
+
   return (
     <div>
       <section className="home-registration py-2">
@@ -88,7 +97,15 @@ export default function NewUserForm() {
                   required
                 />
               </div>
-              <input type="submit" value=" Бүртгүүлэх" />
+              <input
+                className="btn btn-register "
+                style={{ marginLeft: "1rem" }}
+                type="submit"
+                value=" Бүртгүүлэх"
+                onClick={async () => {
+                  await Alert("Амжилттай бүртгэгдлээ", " ");
+                }}
+              />
             </form>
           </div>
         </div>
