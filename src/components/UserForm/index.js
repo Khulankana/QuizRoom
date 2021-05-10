@@ -5,7 +5,7 @@ import { UserContext } from "../../contexts/UserContext";
 import { Alert } from "react-st-modal";
 
 export default function NewUserForm() {
-  const ctx = useContext(UserContext);
+  const { dispatch } = useContext(UserContext);
 
   const [error, setError] = useState("");
   const [name, setName] = useState("");
@@ -24,7 +24,14 @@ export default function NewUserForm() {
     }
 
     console.log(name, email, password);
-    ctx.addUser(name, email, password);
+    dispatch({
+      type: "ADD_USER",
+      user: {
+        name,
+        email,
+        password,
+      },
+    });
     setName("");
     setEmail("");
     setPassword("");
