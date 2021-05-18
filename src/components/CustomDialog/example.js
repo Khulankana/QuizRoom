@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-
 import Choice from "../../assets/quiz/test-multiple-choice-questions.png";
 import YesNo from "../../assets/quiz/yes-or-no.jpg";
 import { CustomDialog, useDialog } from "react-st-modal";
-import TestOption from "../SubContent/index.js";
 
 export default function CustomDialogContent() {
   const dialog = useDialog();
@@ -25,7 +23,11 @@ export default function CustomDialogContent() {
 
         <div className="grid-row-same">
           <div>
-            <button>
+            <button
+              onClick={() => {
+                dialog.close(value);
+              }}
+            >
               <img src={Choice} alt="Choice" />
             </button>
           </div>

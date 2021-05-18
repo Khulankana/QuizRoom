@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import "../../pages/App/style.css";
 import { TestContext } from "../../contexts/TestContext";
 import { useHistory } from "react-router-dom";
-import { CustomDialog, useDialog } from "react-st-modal";
-import CustomDialogContent from "../CustomDialog";
 
 export default function TestMainInfo() {
   const { dispatch } = useContext(TestContext);
@@ -39,7 +37,7 @@ export default function TestMainInfo() {
             <br></br>
             <br></br>
             <form onSubmit={handleSubmit}>
-              <label>Тестийн ерөнхий гарчиг</label>
+              <label>Тестийн ерөнхий гарчиг:</label>
               <textarea
                 style={{
                   backgroundColor: "#E6E6FA",
@@ -59,33 +57,59 @@ export default function TestMainInfo() {
               <br></br>
               <div className="grid-row-same">
                 <div>
-                  <label>Тестийн хугацаа</label>
+                  <label>Хариулах хугацаа:</label>
+                  <div className="item" style={{ marginTop: "1.5rem" }}></div>
+                  <input
+                    type="number"
+                    placeholder="Секундээр тооцож оруулна уу...."
+                    name="time"
+                    required
+                    style={{
+                      border: "3px solid #009cff",
+                      width: "70%",
+                      height: "3rem",
+                      borderRadius: "15px",
+                      padding: "0.5rem",
+                      marginLeft: "3rem",
+                    }}
+                  />
                 </div>
                 <div>
-                  <label>Тестийн оноо</label>
+                  <label>Тестийн үнэлгээ:</label>
+                  <div className="item" style={{ marginTop: "1rem" }}>
+                    <input
+                      style={{ margin: "0 0.5rem 0 2rem" }}
+                      type="radio"
+                      id="answer"
+                      name="answer"
+                      value="answer"
+                    />
+                    <label for="answer">Хугацаанаас хамаарсан </label>
+                    <br />
+                    <br />
+                    <input
+                      style={{ margin: "0 0.5rem 0 2rem" }}
+                      type="radio"
+                      id="answer"
+                      name="answer"
+                      value="answer"
+                    />
+                    <label for="answer"> Тогтмол утгаар</label>
+                  </div>
                 </div>
               </div>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
+              <br></br> <br></br>
               <input
                 className="btn"
                 style={{
                   marginRight: "5rem",
                   backgroundColor: "#c72727",
                   float: "right",
+                  padding: "1rem",
+                  fontSize: "1rem",
                 }}
                 type="submit"
                 value=" Үргэлжлүүлэх"
-                onClick={async () => {
-                  const result = await CustomDialog(<CustomDialogContent />, {
-                    title: "  ",
-                    showCloseIcon: true,
-                  });
-                }}
               />
             </form>
           </div>

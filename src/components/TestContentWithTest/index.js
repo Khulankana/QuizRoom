@@ -2,8 +2,9 @@ import React from "react";
 import "../../pages/App/style.css";
 
 import MainContent from "../MainContent";
+import SubContent from "../SubContent/index";
 
-export default function TestContent() {
+export default function TestContentWithTest() {
   return (
     <div className="quiz-create py-2">
       <div className="container-fluid">
@@ -12,7 +13,9 @@ export default function TestContent() {
             <div className="item">
               <MainContent />
             </div>
-            <div className="item" style={{ marginTop: "2rem" }}></div>
+            <div className="item" style={{ marginTop: "2rem" }}>
+              <SubContent />
+            </div>
           </div>
         </div>
       </div>

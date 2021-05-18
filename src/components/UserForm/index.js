@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../pages/App/style.css";
 import { UserContext } from "../../contexts/UserContext";
-import { Alert } from "react-st-modal";
 
 export default function NewUserForm() {
   const { dispatch } = useContext(UserContext);
@@ -109,9 +108,6 @@ export default function NewUserForm() {
                 style={{ marginLeft: "1rem" }}
                 type="submit"
                 value=" Бүртгүүлэх"
-                onClick={async () => {
-                  await Alert("Амжилттай бүртгэгдлээ", " ");
-                }}
               />
             </form>
           </div>

@@ -1,105 +1,7 @@
-import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../../pages/App/style.css";
 import Logo from "../../assets/logo.png";
-import { CustomDialog, useDialog } from "react-st-modal";
-
-function CustomDialogContent() {
-  const dialog = useDialog();
-  const history = useHistory();
-  const [value, setValue] = useState();
-
-  const routeChange = () => {
-    let path = `newPath`;
-    history.push(path);
-  };
-
-  return (
-    <div className="form-popup" style={{ textAlign: "center" }}>
-      <form className="form-container">
-        <h2
-          style={{
-            textTransform: "uppercase",
-            fontWeight: "400",
-            fontSize: "1.5rem",
-          }}
-        >
-          Тавтай морилно уу !
-        </h2>
-        <div className="bottom-line"></div>
-        <input
-          type="text"
-          placeholder="Нэвтрэх нэр ..."
-          style={{
-            width: "24rem",
-            height: "2.4rem",
-            padding: "0.6rem",
-            marginTop: "1rem",
-          }}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-        />
-        <br />
-        <br />
-        <input
-          type="password"
-          placeholder="Нууц үг ..."
-          style={{
-            width: "24rem",
-            height: "2.4rem",
-            padding: "0.6rem",
-          }}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            width: "20rem",
-            border: "none",
-            color: "#1B456B",
-            margin: "2rem auto",
-            fontSize: "1rem",
-            backgroundColor: "#fff",
-            marginTop: "1rem",
-            marginBottom: "0.2rem",
-          }}
-          onClick={() => {
-            alert("email ee oruulna u ");
-          }}
-        >
-          Нэвтрэх нэр, нууц үгээ мартсан ...
-        </button>
-        <div
-          style={{
-            height: "0.5px",
-            width: "16rem",
-            backgroundColor: "grey",
-            margin: "0 auto",
-          }}
-        ></div>
-        <br />
-        <button
-          type="submit"
-          className="btn"
-          style={{
-            backgroundColor: "#c72727",
-            color: "#fff",
-            margin: "2rem auto",
-            width: "8rem",
-            fontSize: "1rem",
-            marginLeft: "16rem",
-          }}
-          onClick={routeChange}
-        >
-          Нэвтрэх
-        </button>
-      </form>
-    </div>
-  );
-}
 
 export default function Navbar() {
   return (
@@ -113,15 +15,7 @@ export default function Navbar() {
             </Link>
           </li>
           <li>
-            <Link
-              className="login"
-              onClick={async () => {
-                const result = await CustomDialog(<CustomDialogContent />, {
-                  title: "  ",
-                  showCloseIcon: true,
-                });
-              }}
-            >
+            <Link className="login" to="/userLogin">
               Нэвтрэх
             </Link>
           </li>

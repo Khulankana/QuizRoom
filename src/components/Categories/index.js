@@ -15,7 +15,9 @@ export default function Showcase() {
           <div className="article-container">
             <article className="card">
               <img src={Knowledge} alt="knowledge" />
-              <div className="category category-sports">Хэрэглэхэд хялбар</div>
+              <div className="category category-sports">
+                Сонирхолтой, хөгжилтэй
+              </div>
               <p>Мэдлэгээ шалгаад үзэх үү?</p>
             </article>
             <article className="card">

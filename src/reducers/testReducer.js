@@ -7,9 +7,8 @@ export const testReducer = (state, action) => {
         ...state,
         {
           title: action.test.title,
-          quistion: action.test.quistion,
-          answer_1: action.test.answer_1,
-          answer_2: action.test.answer_2,
+          time: action.test.time,
+          score: action.test.score,
           id: uuidv4(),
         },
       ];

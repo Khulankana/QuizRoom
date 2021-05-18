@@ -10,7 +10,8 @@ const TestList = () => {
   const { dispatch } = useContext(TestContext);
   console.log(useContext(TestContext));
 
-  const style = { fontSize: "3rem" };
+  //const style = { fontSize: "3rem" };
+
   return tests.length ? (
     <div className="test-list py-2">
       <div className="container-fluid">
