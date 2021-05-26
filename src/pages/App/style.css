@@ -434,6 +434,16 @@ h4 {
   padding: 20px 0;
   margin-bottom: 2rem;
 }
+.grid-5-1 {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-4-1 > div {
+  padding: 0.3rem;
+}
 
 //Footer
 .main-footer {
@@ -508,4 +518,15 @@ textarea {
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 2;
   cursor: pointer;
+}
+
+.Modal {
+  position: fixed;
+  z-index: 500;
+  background-color: white;
+  width: 30%;
+  border: 1px solid grey;
+  box-shadow: 16px;
+  left: 15%;
+  top: 30%;
 }

@@ -1,8 +1,8 @@
 import React from "react";
 import "../../pages/App/style.css";
+
 import { Link } from "react-router-dom";
-import { CustomDialog, useDialog } from "react-st-modal";
-import CustomDialogContent from "../CustomDialog";
+import QuizList from "../QuizList";
 
 export default function MainContent() {
   return (
@@ -11,11 +11,13 @@ export default function MainContent() {
         className="quiz-content"
         style={{
           height: "420px",
+          width: "16.5rem",
           border: "1px solid #CFCFE1",
           margin: "0 1rem 2rem 0",
+          overflowY: "scroll",
         }}
       >
-        Тестүүдийн жагсаалт
+        <QuizList />
       </div>
       <div className="quiz-add-finish">
         <Link
@@ -27,7 +29,7 @@ export default function MainContent() {
             textAlign: "center",
             marginLeft: "4rem",
           }}
-          to="/test_content/test"
+          to="/test_content_test"
         >
           Тест нэмэх
         </Link>

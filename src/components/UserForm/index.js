@@ -2,9 +2,12 @@ import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "../../pages/App/style.css";
 import { UserContext } from "../../contexts/UserContext";
+import axios from "axios";
 
 export default function NewUserForm() {
   const { dispatch } = useContext(UserContext);
+
+  const userCtx = useContext(UserContext);
 
   const [error, setError] = useState("");
   const [name, setName] = useState("");
@@ -16,6 +19,9 @@ export default function NewUserForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    userCtx.login("zulaa", "pass");
+
     setError("");
     if (password !== passwordConfirm) {
       setError("Нууц үгээ зөв давтана уу!");

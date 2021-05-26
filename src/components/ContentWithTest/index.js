@@ -2,6 +2,7 @@ import React from "react";
 import "../../pages/App/style.css";
 
 import MainContent from "../MainContent";
+import NewQuizForm from "../QuizForm";
 
 export default function TestContentWithTest() {
   return (
@@ -15,6 +16,7 @@ export default function TestContentWithTest() {
             <div className="item" style={{ marginTop: "2rem" }}>
               <br />
               <br />
+              <NewQuizForm />
             </div>
           </div>
         </div>

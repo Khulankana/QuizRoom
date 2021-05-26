@@ -1,12 +1,11 @@
 import React, { createContext, useReducer, useEffect } from "react";
-import { userReducer } from "../reducers/userReducer";
+import { userLoginReducer } from "../reducers/userLoginReducer";
 import axios from "../tt-axios";
 
-export const UserContext = createContext();
+export const UserLoginContext = createContext();
 
 const login = (loginName, password) => {
   const url = "front";
-
   const data = [
     {
       loginName,
@@ -32,16 +31,16 @@ const login = (loginName, password) => {
     });
 };
 
-const UserContextProvider = (props) => {
-  const [users, dispatch] = useReducer(userReducer, [], () => {
-    const localData = localStorage.getItem("users");
+const UserLoginContextProvider = (props) => {
+  const [loginUsers, dispatch] = useReducer(userLoginReducer, [], () => {
+    const localData = localStorage.getItem("loginUsers");
     return localData ? JSON.parse(localData) : [];
   });
   useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
+    localStorage.setItem("loginUsers", JSON.stringify(loginUsers));
+  }, [loginUsers]);
   return (
-    <UserContext.Provider value={{ users, dispatch, login }}>
+    <UserContext.Provider value={{ loginUsers, dispatch, login }}>
       {props.children}
     </UserContext.Provider>
   );

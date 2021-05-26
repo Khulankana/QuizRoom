@@ -1,36 +1,68 @@
 import React, { useContext, useState } from "react";
 import "../../pages/App/style.css";
 import { TestContext } from "../../contexts/TestContext";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import Radio from "@material-ui/core/Radio";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
 
-export default function TestMainInfo() {
+export default function TestEdit() {
+  const { tests } = useContext(TestContext);
   const { dispatch } = useContext(TestContext);
-  const [title, setTitle] = useState("");
-  const [quistion, setQuistion] = useState("");
-  const [answer_1, setAnswer_1] = useState("");
-  const [answer_2, setAnswer_2] = useState("");
 
   const history = useHistory();
+  const match = useRouteMatch();
+  const testId = match.params.id;
+
+  let testData = null;
+  tests.forEach((test) => {
+    if (test.id === testId) {
+      testData = test;
+    }
+  });
+
+  let initialTitle = null;
+  let initialScore = null;
+  let initialTime = null;
+
+  if (testData) {
+    initialTitle = testData.title;
+    initialScore = testData.score;
+    initialTime = testData.time;
+  } else {
+    alert("No data!");
+  }
+  const [title, setTitle] = useState(initialTitle);
+  const [score, setScore] = useState(initialScore);
+  const [time, setTime] = useState(initialTime);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch({
-      type: "ADD_TEST",
-      test: { title, quistion, answer_1, answer_2 },
+      type: "EDIT_TEST",
+      test: {
+        id: testId,
+        title,
+        score,
+        time,
+      },
     });
     setTitle("");
-    setQuistion("");
-    setAnswer_1("");
-    setAnswer_2("");
+    setTime("");
 
     let path = `/test_content`;
     history.push(path);
   };
 
+  const handleChange = (event) => {
+    setScore(event.target.value);
+  };
+
   return (
     <div className="test-main-info py-2">
       <div className="container-fluid">
-        <h2>Тест үүсгэх</h2>
+        <h2>Тестэндээ засвар хийх</h2>
         <div className="bottom-line"></div>
         <div className="card" style={{ height: "500px" }}>
           <div className="item" style={{ margin: "0 5rem 0 5rem" }}>
@@ -48,11 +80,10 @@ export default function TestMainInfo() {
                   height: "5rem",
                 }}
                 type="text"
-                placeholder="Тестийн ерөнхий гарчиг ...."
                 value={title}
                 required
                 onChange={(e) => setTitle(e.target.value)}
-              ></textarea>
+              />
               <br></br>
               <br></br>
               <div className="grid-row-same">
@@ -62,8 +93,9 @@ export default function TestMainInfo() {
                   <input
                     type="number"
                     placeholder="Секундээр тооцож оруулна уу...."
-                    name="time"
+                    value={time}
                     required
+                    onChange={(e) => setTime(e.target.value)}
                     style={{
                       border: "3px solid #009cff",
                       width: "70%",
@@ -76,26 +108,26 @@ export default function TestMainInfo() {
                 </div>
                 <div>
                   <label>Тестийн үнэлгээ:</label>
-                  <div className="item" style={{ marginTop: "1rem" }}>
-                    <input
-                      style={{ margin: "0 0.5rem 0 2rem" }}
-                      type="radio"
-                      id="answer"
-                      name="answer"
-                      value="answer"
-                    />
-                    <label for="answer">Хугацаанаас хамаарсан </label>
-                    <br />
-                    <br />
-                    <input
-                      style={{ margin: "0 0.5rem 0 2rem" }}
-                      type="radio"
-                      id="answer"
-                      name="answer"
-                      value="answer"
-                    />
-                    <label for="answer"> Тогтмол утгаар</label>
-                  </div>
+                  <br />
+                  <FormControl component="fieldset">
+                    <RadioGroup
+                      aria-label="gender"
+                      name="gender1"
+                      value={score}
+                      onChange={handleChange}
+                    >
+                      <FormControlLabel
+                        value="time"
+                        control={<Radio />}
+                        label="Хугацаанаас хамаарсан"
+                      />
+                      <FormControlLabel
+                        value="constant"
+                        control={<Radio />}
+                        label="Тогтмол утгаар"
+                      />
+                    </RadioGroup>
+                  </FormControl>
                 </div>
               </div>
               <br></br> <br></br>

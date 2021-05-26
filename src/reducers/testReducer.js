@@ -12,9 +12,22 @@ export const testReducer = (state, action) => {
           id: uuidv4(),
         },
       ];
+    case "EDIT_TEST":
+      const results = state.slice();
+      results.map((test, i) => {
+        if (test.id === action.test.id) {
+          results[i] = {
+            ...results[i],
+            title: action.test.title,
+            time: action.test.time,
+            score: action.test.score,
+          };
+        }
+      });
+      console.log(results);
+      return results;
     case "DELETE_TEST":
       return state.filter((test) => test.id !== action.id);
-
     default:
       return state;
   }

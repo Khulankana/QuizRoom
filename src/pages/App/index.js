@@ -6,11 +6,13 @@ import TestListsPage from "../TestListsPage";
 import Register from "../UserRegistration";
 import Login from "../UserLogin";
 import AnswerQuiz from "../AnswerQuiz";
-import LoginPage from "../LoginPage";
+import LoginPage from "../AfterLoginPage";
 import TestInfoPage from "../TestInfoPage";
 import TestContent from "../TestContent";
-import Test from "../Test";
+import Test from "../QuizPage";
 import Email from "../Email";
+import TestContentEdit from "../TestContentEdit";
+import QuizEdit from "../QuizEdit";
 
 export default function App() {
   return (
@@ -23,7 +25,9 @@ export default function App() {
         <Route path="/email" component={Email} />
         <Route path="/test_info" component={TestInfoPage} />
         <Route path="/test_content" component={TestContent} />
-        <Route path="/test_content/test" component={Test} />
+        <Route path="/test_content_test" component={Test} />
+        <Route path="/test_edit/:id" component={TestContentEdit} />
+        <Route path="/quiz_edit/:id" component={QuizEdit} />
         <Route path="/test" component={AnswerQuiz} />
         <Route path="/login" component={LoginPage} />
       </Switch>

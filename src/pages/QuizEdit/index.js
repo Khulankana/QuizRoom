@@ -1,14 +1,14 @@
 import React from "react";
 
 import Logout from "../../components/Navbar/logout";
-import TestContentWithTest from "../../components/TestContentWithTest";
+import QuizForm from "../../components/ContentWithTest/edit";
 import Footer from "../../components/Footer";
 
-export default function AnswerQuiz() {
+export default function QuizEdit() {
   return (
     <div>
       <Logout />
-      <TestContentWithTest />
+      <QuizForm />
       <Footer />
     </div>
   );

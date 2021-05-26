@@ -2,7 +2,7 @@ import React from "react";
 import "../../pages/App/style.css";
 
 import MainContent from "../MainContent";
-import SubContent from "../SubContent/index";
+import NewQuizForm from "../QuizForm/edit";
 
 export default function TestContentWithTest() {
   return (
@@ -14,7 +14,9 @@ export default function TestContentWithTest() {
               <MainContent />
             </div>
             <div className="item" style={{ marginTop: "2rem" }}>
-              <SubContent />
+              <br />
+              <br />
+              <NewQuizForm />
             </div>
           </div>
         </div>

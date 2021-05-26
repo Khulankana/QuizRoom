@@ -13,7 +13,7 @@ export const userReducer = (state, action) => {
         },
       ];
     case "DELETE_USER":
-      return state.filter((book) => book.id !== action.id);
+      return state.filter((user) => user.id !== action.id);
 
     default:
       return state;

@@ -41,7 +41,7 @@ export default function UserLogin() {
                   margin: "2rem auto",
                   fontSize: "1rem",
                   backgroundColor: "#fff",
-                  paddingLeft: "5rem",
+                  paddingLeft: "6.5rem",
                 }}
                 to="/email"
               >

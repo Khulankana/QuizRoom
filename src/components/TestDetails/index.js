@@ -4,8 +4,8 @@ const TestDetails = ({ test }) => {
   return (
     <li>
       <div className="title">{test.title} </div>
-      <div className="author">{test.time}</div>
-      <div className="author">{test.score}</div>
+      <div className="time">{test.time}</div>
+      <div className="score">{test.score}</div>
     </li>
   );
 };
