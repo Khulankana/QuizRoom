@@ -1,0 +1,226 @@
+package testendee.client.global;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.ejb.ApplicationException;
+
+import org.apache.commons.lang3.StringUtils;
+
+import netware.utils.constant.UtilMessage;
+import netware.utils.func.Converter;
+import netware.utils.func.DateUtils;
+import netware.utils.func.Utils;
+
+@ApplicationException(rollback = true, inherited = false)
+public class NetWareException extends Exception implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private int code;
+	private boolean isSetted;
+	private Map<String, Object> params = new HashMap<String, Object>();
+
+	private String message;
+
+	public NetWareException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	public NetWareException(int code) {
+		super("" + code);
+		this.code = code;
+	}
+
+	public NetWareException(Exception e) {
+		super(e);
+		this.code = UtilMessage.SYSTEM_ERROR;
+		this.message = e.getMessage();
+	}
+
+	public int getCode() {
+		return code;
+	}
+
+	public void setCode(int code) {
+		this.code = code;
+	}
+
+	public boolean isSetted() {
+		return isSetted;
+	}
+
+	public void setSetted(boolean isSetted) {
+		this.isSetted = isSetted;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public void addParam(String key, Object value) {
+		this.params.put(Converter.toStdStr(key), value);
+	}
+
+	public void setMessage(String message) {
+
+		if (this.isSetted) {
+			return;
+		}
+
+		this.message = message;
+
+		List<String> keys = new ArrayList<>();
+		List<String> values = new ArrayList<>();
+
+		for (Entry<String, Object> entry : this.params.entrySet()) {
+			keys.add(String.format("{%s}", entry.getKey()));
+			values.add("" + entry.getValue());
+		}
+
+		this.message = StringUtils.replaceEach(this.message, keys.toArray(new String[keys.size()]),
+				values.toArray(new String[values.size()]));
+
+		int begIdx;
+		int endIdx;
+		int idx;
+		String strTmp;
+		String tmp2;
+		String tmp;
+		String format;
+		String valFormat;
+		String key;
+		String txnYear;
+		String txnMonth;
+		String txnDay;
+		Date dt;
+		String tmpValue;
+
+		for (int i = 0; i < this.message.length(); i++) {
+			if (this.message.charAt(i) == '[') {
+				begIdx = i + 1;
+				strTmp = this.message.substring(begIdx);
+				endIdx = strTmp.indexOf(']');
+				if (endIdx <= 0) {
+					return;
+				}
+				format = strTmp.substring(0, endIdx);
+				idx = format.indexOf(':');
+				if (idx < 0) {
+					format = format.toUpperCase();
+					if (this.message.length() >= begIdx + endIdx + 1)
+						tmp2 = this.message.substring(begIdx + endIdx + 1);
+					else
+						tmp2 = "";
+					if (params.containsKey(format.trim())) {
+						this.message = this.message.substring(0, i) + params.get(format.trim()) + tmp2;
+						i += ("" + params.get(format.trim())).length() - 1;
+					}
+				} else {
+					key = format.substring(0, idx).toUpperCase();
+					valFormat = format.substring(idx + 1);
+
+					if (!params.containsKey(key))
+						continue;
+
+					dt = Converter.parseDate("" + params.get(key));
+					txnYear = Converter.toStr(DateUtils.getYear(dt));
+					txnMonth = Utils.fillLeft(DateUtils.getMonth(dt), '0', 2);
+					txnDay = Utils.fillLeft(DateUtils.getDayOfMonth(dt), '0', 2);
+
+					tmp = "";
+					tmpValue = "";
+
+					for (int z = 0; z < valFormat.length(); z++) {
+						if (valFormat.charAt(z) == ' ')
+							continue;
+
+						if (tmp.length() > 0) {
+							if (tmp.charAt(0) == valFormat.charAt(z)) {
+								tmp += valFormat.charAt(z);
+							} else {
+								if (tmp.charAt(0) == 'Y' || tmp.charAt(0) == 'y') {
+									tmpValue += txnYear.substring(txnYear.length() - tmp.length());
+								} else if (tmp.charAt(0) == 'M') {
+									tmpValue += txnMonth.substring(txnMonth.length() - tmp.length());
+								} else if (tmp.charAt(0) == 'D' || tmp.charAt(0) == 'd') {
+									tmpValue += txnDay.substring(txnDay.length() - tmp.length());
+								} else {
+									tmpValue += tmp;
+								}
+
+								tmp = "";
+								tmp += valFormat.charAt(z);
+							}
+						} else {
+							tmp += valFormat.charAt(z);
+						}
+					}
+
+					if (tmp.length() > 0) {
+						if (tmp.charAt(0) == 'Y' || tmp.charAt(0) == 'y') {
+							tmpValue += txnYear.substring(txnYear.length() - tmp.length());
+						} else if (tmp.charAt(0) == 'M') {
+							tmpValue += txnMonth.substring(txnMonth.length() - tmp.length());
+						} else if (tmp.charAt(0) == 'D' || tmp.charAt(0) == 'd') {
+							tmpValue += txnDay.substring(txnDay.length() - tmp.length());
+						} else {
+							tmpValue += tmp;
+						}
+					}
+
+					if (this.message.length() >= begIdx + endIdx + 1)
+						tmp2 = this.message.substring(begIdx + endIdx + 1);
+					else
+						tmp2 = "";
+
+					this.message = this.message.substring(0, i) + tmpValue + tmp2;
+
+					i += tmpValue.length() - 1;
+
+				}
+			}
+		}
+
+		this.isSetted = true;
+	}
+
+	public void prepareDbError(String msg) {
+
+		int errorCode = Converter.toInt(msg.substring(4, 9));
+
+		switch (errorCode) {
+		case 1:
+			code = 91000018;
+			break;
+		case 1400:
+			code = 91000019;
+			break;
+		case 2291:
+			code = 91000021;
+			break;
+		case 2292:
+			code = 91000020;
+			break;
+		default:
+			// Do nothing
+		}
+	}
+}

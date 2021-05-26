@@ -1,0 +1,20 @@
+package testendee.user;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+/**
+ * Session Bean implementation class UserManagerBean
+ */
+@Stateless
+@LocalBean
+public class UserManagerBean {
+
+    /**
+     * Default constructor. 
+     */
+    public UserManagerBean() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

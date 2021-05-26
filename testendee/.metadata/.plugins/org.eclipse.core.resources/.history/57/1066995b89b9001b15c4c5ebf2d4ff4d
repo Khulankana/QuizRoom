@@ -1,0 +1,54 @@
+package testendee.main;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
+
+import testendee.client.main.Request;
+
+/**
+ * Session Bean implementation class ThreadContext
+ */
+@Singleton
+@LocalBean
+public class ThreadContext {
+
+	private static Map<Long, Request> requests = new HashMap<Long, Request>();
+
+	@Override
+	public void reset() {
+		this.setCurrentRequest(new Request());
+	}
+
+	public Request getCurrentRequest() {
+		Request request = requests.get(getId());
+		if (request == null) {
+			this.reset();
+			request = requests.get(getId());
+		}
+		return request;
+	}
+
+	public void setCurrentRequest(Request request) {
+		requests.put(getId(), request);
+	}
+
+	private long getId() {
+		return Thread.currentThread().getId();
+	}
+
+	public void release() {
+		if (requests.containsKey(getId())) {
+			requests.remove(getId());
+		}
+	}
+
+	public int getJobSize() {
+		return requests.size();
+	}
+
+}

@@ -1,0 +1,7 @@
+package testendee.client.data;
+
+import java.io.Serializable;
+
+public class LoginResult implements Serializable {
+
+}

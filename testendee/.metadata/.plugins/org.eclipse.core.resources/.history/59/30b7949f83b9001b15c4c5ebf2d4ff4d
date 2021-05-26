@@ -1,0 +1,32 @@
+package testendee.ejb.entity;
+
+import java.util.List;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import testendee.client.IInvoker;
+import testendee.client.data.DataAdminUser;
+import testendee.client.global.Converter;
+import testendee.client.global.TestendeeException;
+
+/**
+ * Session Bean implementation class InvokerBean
+ */
+@Stateless
+@LocalBean
+public class InvokerBean implements IInvoker {
+
+	@PersistenceContext
+	EntityManager em;
+
+	/**
+	 * Default constructor.
+	 */
+	public InvokerBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

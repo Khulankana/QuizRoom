@@ -1,0 +1,254 @@
+package testendee.client.main;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Response;
+
+import testendee.client.data.DataAdminUser;
+import testendee.client.global.Converter;
+import testendee.client.global.SpecialFuncs;
+import testendee.client.global.Utils;
+
+public class Request {
+
+	private String requestId = "";
+
+	private static final long serialVersionUID = 1L;
+
+	public static final String FUNC_NO = "func";
+
+	private Response.Status status = Response.Status.OK;
+	private String responseMsg = "";
+
+	private int contentLength;
+
+	private long funcNo = 0L;
+
+	private String ip;
+	private int port;
+
+	private String session;
+
+	private String data;
+
+	/**
+	 * Дотроосоо дуудагдсан эсэх
+	 */
+	private boolean isInternal = false;
+
+	private String lookup;
+	private String funcName;
+
+	private DataAdminUser userInfo = new DataAdminUser();
+
+	public Request() {
+
+	}
+
+	public Request() {
+	}
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
+	}
+
+	public Response.Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Response.Status status) {
+		this.status = status;
+	}
+
+	public String getResponseMsg() {
+		return responseMsg;
+	}
+
+	public void setResponseMsg(String responseMsg) {
+		this.responseMsg = responseMsg;
+	}
+
+	public int getContentLength() {
+		return contentLength;
+	}
+
+	public void setContentLength(int contentLength) {
+		this.contentLength = contentLength;
+	}
+
+	public long getFuncNo() {
+		return funcNo;
+	}
+
+	public void setFuncNo(long funcNo) {
+		this.funcNo = funcNo;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public String getSession() {
+		return session;
+	}
+
+	public void setSession(String session) {
+		this.session = session;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+	public String getLookup() {
+		return lookup;
+	}
+
+	public void setLookup(String lookup) {
+		this.lookup = lookup;
+	}
+
+	public String getFuncName() {
+		return funcName;
+	}
+
+	public void setFuncName(String funcName) {
+		this.funcName = funcName;
+	}
+
+	public void parse(HttpServletRequest request) throws IOException {
+
+		this.contentLength = request.getContentLength();
+
+		if (this.funcNo == 0L) {
+			this.funcNo = Converter.toLong(request.getHeader(FUNC_NO));
+		}
+		if (SpecialFuncs.LOGIN != this.funcNo) {
+			Cookie[] cookies = request.getCookies();
+			if (null != cookies) {
+				for (Cookie cookie : cookies) {
+					if (null != cookie && "TTSESSION".equals(cookie.getName())) {
+						this.session = cookie.getValue();
+						break;
+					}
+				}
+			}
+		}
+
+		String ip = request.getHeader("X-Real-IP");
+		String xForwardedFor = request.getHeader("X-Forwarded-For");
+		if ((ip == null || ip.equals("127.0.0.1")) && xForwardedFor != null)
+			ip = xForwardedFor;
+		if (ip == null)
+			ip = request.getRemoteAddr();
+		this.ip = ip;
+
+		String port = request.getHeader("Server-Port");
+		if (port != null) {
+			this.port = Converter.toInt(port);
+		}
+		if (this.port == 0) {
+			this.port = request.getLocalPort();
+		}
+
+		if (this.funcNo == 0L) {
+			this.status = Response.Status.NOT_IMPLEMENTED;
+			this.responseMsg = "Function code does not exist!";
+			return;
+		}
+
+		if (request.getContentLength() < 1) {
+			this.status = Response.Status.NOT_IMPLEMENTED;
+			this.responseMsg = "Empty content!";
+			return;
+		}
+
+		if (this.funcNo == SpecialFuncs.LOGOUT) {
+			this.data = String.format("[\"%s\"]", this.session);
+		}
+	}
+
+	public void setAttrVal(String key, Object value) {
+		attrs.put(key.toUpperCase(), value);
+	}
+
+	public Object getAttrVal(String key) {
+		if (key != null) {
+			key = key.toUpperCase();
+		}
+		if (attrs.containsKey(key)) {
+			return attrs.get(key);
+		}
+
+		return null;
+	}
+
+	public boolean isInternal() {
+		return isInternal;
+	}
+
+	public void setInternal(boolean isInternal) {
+		this.isInternal = isInternal;
+	}
+
+	public int getChannel() {
+		return channel;
+	}
+
+	public void setChannel(int channel) {
+		this.channel = channel;
+
+		EChannel eChannel = EChannel.parse(channel);
+		EAppCode appCode = eChannel.getAppCode();
+		this.appCode = appCode.toString();
+	}
+
+	public Date getStart() {
+		return start;
+	}
+
+	public void setStart(Date start) {
+		this.start = start;
+	}
+
+	public Date getEnd() {
+		return end;
+	}
+
+	public void setEnd(Date end) {
+		this.end = end;
+	}
+
+	public UserInfo getUserInfo() {
+		return userInfo;
+	}
+
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+}

@@ -1,0 +1,43 @@
+package testendee.admin;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import testendee.client.data.DataAdminUserSession;
+import testendee.client.global.Converter;
+import testendee.ejb.entity.AdminUserSession;
+import testendee.main.ThreadContext;
+
+/**
+ * Session Bean implementation class AuthenticationBean
+ */
+@Stateless
+@LocalBean
+public class AuthenticationBean {
+
+	@EJB
+	ThreadContext threadCtx;
+
+	@PersistenceContext
+	EntityManager em;
+
+	/**
+	 * Default constructor.
+	 */
+	public AuthenticationBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public DataAdminUserSession getCurSession() {
+		String sessionId = threadCtx.getCurrentRequest().getSession();
+		AdminUserSession session = em.find(AdminUserSession.class, sessionId);
+		if (session == null) {
+			// TODO throw нэвтэрнэ үү
+		}
+
+		return Converter.cloneObject(session, DataAdminUserSession.class);
+	}
+}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.text.SimpleDateFormat"/>
+<fullyQualifiedTypeName name="java.text.ParseException"/>
+<fullyQualifiedTypeName name="testendee.client.global.TestendeeException"/>
+<fullyQualifiedTypeName name="java.util.logging.Level"/>
+<fullyQualifiedTypeName name="java.util.logging.Logger"/>
+<fullyQualifiedTypeName name="testendee.client.global.DateFormats"/>
+<fullyQualifiedTypeName name="org.json.JSONArray"/>
+<fullyQualifiedTypeName name="java.lang.reflect.Array"/>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="javax.ejb.Remote"/>
+<fullyQualifiedTypeName name="testendee.client.IInvoker"/>
+<fullyQualifiedTypeName name="org.jboss.security.acl.EntitlementEntry"/>
+<fullyQualifiedTypeName name="javax.ws.rs.core.Response"/>
+<fullyQualifiedTypeName name="javax.servlet.http.Cookie"/>
+<fullyQualifiedTypeName name="testendee.client.main.IThreadContext"/>
+<fullyQualifiedTypeName name="testendee.client.global.Utils"/>
+<fullyQualifiedTypeName name="testendee.user.UserManagerBean"/>
+<fullyQualifiedTypeName name="testendee.main.ThreadContext"/>
+<fullyQualifiedTypeName name="testendee.ejb.entity.AdminUserSession"/>
+<fullyQualifiedTypeName name="testendee.admin.AuthenticationBean"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.util.Date"/>
+<fullyQualifiedTypeName name="javax.persistence.PersistenceContext"/>
+<fullyQualifiedTypeName name="javax.persistence.EntityManager"/>
+<fullyQualifiedTypeName name="testendee.ejb.entity.AdminFunc"/>
+<fullyQualifiedTypeName name="testendee.client.global.Converter"/>
+<fullyQualifiedTypeName name="testendee.client.data.DataAdminFunc"/>
+<fullyQualifiedTypeName name="testendee.client.global.TestendeeError"/>
+<fullyQualifiedTypeName name="testendee.client.main.Request"/>
+<fullyQualifiedTypeName name="testendee.client.main.IThreadContextRemote"/>
+<fullyQualifiedTypeName name="javax.ejb.EJB"/>
+<fullyQualifiedTypeName name="testendee.client.global.SpecialFuncs"/>
+<fullyQualifiedTypeName name="testendee.client.data.DataAdminUserSession"/>
+<fullyQualifiedTypeName name="testendee.client.global.CommonError"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="testendee.client.data.LoginRequest"/>
+<fullyQualifiedTypeName name="testendee.client.data.LoginResult"/>
+<fullyQualifiedTypeName name="javax.ejb.Local"/>
+<fullyQualifiedTypeName name="testendee.client.admin.IAuthentication"/>
+<fullyQualifiedTypeName name="testendee.client.main.IInvokerRemote"/>
+<fullyQualifiedTypeName name="testendee.admin.UserManagerBean"/>
+<fullyQualifiedTypeName name="testendee.client.data.DataAdminUser"/>
+<fullyQualifiedTypeName name="testendee.ejb.entity.AdminUser"/>
+<fullyQualifiedTypeName name="testendee.main.MainBean"/>
+</qualifiedTypeNameHistroy>

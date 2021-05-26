@@ -1,0 +1,7 @@
+package testendee.client.global;
+
+public class TestendeeError {
+
+	public static final int SYSTEM_ERROR = 9000;
+
+}

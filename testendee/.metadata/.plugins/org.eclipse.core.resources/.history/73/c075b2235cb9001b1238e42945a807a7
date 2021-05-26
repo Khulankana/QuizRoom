@@ -1,0 +1,138 @@
+package testendee.client.global;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class Utils {
+
+	public static String SERVER_BIN_PROP_NAME = "server.bin";
+	public static String SERVER_HOME_PROP_NAME = "server.home";
+	public static String SERVER_USER_DIR_PROP_NAME = "user.dir";
+
+	/**
+	 * Bean-ий instance буцаана
+	 * 
+	 * @param lookup               Хайж олох нэр
+	 * @param writeErrLog          Алдааны лог бичих эсэх
+	 * @param throwNamingException Lookup олдохгүй бол Exception throw хийх эсэх
+	 * @return Bean-ий instance
+	 * @throws NetWareException
+	 */
+	public static Object doLookup(String lookup, boolean writeErrLog, boolean throwNamingException)
+			throws TestendeeException {
+		Object ret = null;
+		try {
+			ret = InitialContext.doLookup(lookup);
+		} catch (NamingException e) {
+			if (writeErrLog)
+				FileLogger.error(Utils.class, String.format("Lookup: %s, Message: %s", lookup, e.getMessage()));
+			if (throwNamingException)
+				throw new TestendeeException(TestendeeError.LOOKUP_ERROR);
+		}
+		return ret;
+	}
+
+	/**
+	 * @return App server-ийн bin фолдерын замыг буцаана
+	 */
+	public static String getServerBinDir() {
+
+		String dir = System.getProperty(UtilConstants.SERVER_BIN_PROP_NAME, "");
+		if (emptyOrNull(dir))
+			dir = System.getProperty(UtilConstants.SERVER_HOME_PROP_NAME, "");
+		else
+			return dir;
+
+		try {
+			if (emptyOrNull(dir)) {
+				dir = System.getProperty(UtilConstants.SERVER_USER_DIR_PROP_NAME, "");
+			} else {
+				dir = dir + File.separator + "bin";
+
+				System.setProperty(UtilConstants.SERVER_BIN_PROP_NAME, dir);
+
+				return dir;
+			}
+
+			if (dir.endsWith("sbin")) // modules\system\layers\base\native\sbin
+			{
+				File f = new File(dir);
+				// Up to 3 times
+				f = f.getParentFile();
+				f = f.getParentFile();
+				f = f.getParentFile();
+
+				dir = f.getAbsolutePath();
+
+				dir += File.separator + "bin";
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			dir = System.getProperty(UtilConstants.SERVER_USER_DIR_PROP_NAME, "");
+
+		}
+
+		System.setProperty(UtilConstants.SERVER_BIN_PROP_NAME, dir);
+
+		return dir;
+	}
+
+	/**
+	 * Өгөгдсөн утгыг null эсвэл хоосон эсэхийг шалгана. String, List, ArrayList
+	 * төрлийн утгууд дээр хэрэглэгдэнэ
+	 * 
+	 * @param value Утга
+	 * @return null эсвэл хоосон бол <b>true</b> эсрэг тохиолдолд <b>false</b>
+	 *         буцаана
+	 */
+	public static boolean emptyOrNull(Object value) {
+		return emptyOrNull(value, false);
+	}
+
+	/**
+	 * Өгөгдсөн утгыг null эсвэл хоосон эсэхийг шалгана. String, List, ArrayList
+	 * төрлийн утгууд дээр хэрэглэгдэнэ
+	 * 
+	 * @param value             Утга
+	 * @param ignoreWhiteSpaces Хоосон зайнуудыг (tab, enter, space г.м) "" гэж үзэх
+	 *                          эсэх
+	 * @return null эсвэл хоосон бол <b>true</b> эсрэг тохиолдолд <b>false</b>
+	 *         буцаана
+	 */
+	public static boolean emptyOrNull(Object value, boolean ignoreWhiteSpaces) {
+		if (value == null)
+			return true;
+		if (value.getClass() == String.class) {
+			String str = String.valueOf(value);
+			if (ignoreWhiteSpaces)
+				str = str.replaceAll("\\s", "");
+			if (str.equals(""))
+				return true;
+		} else if (value.getClass() == List.class || value.getClass() == ArrayList.class
+				|| value.getClass() == LinkedList.class) {
+			List<?> list = (List<?>) value;
+			return list.isEmpty();
+		} else if (value.getClass() == java.util.Vector.class) {
+			java.util.Vector<?> vector = (java.util.Vector<?>) value;
+			return vector.isEmpty();
+		} else if (value.getClass() == Map.class || value.getClass() == HashMap.class
+				|| value.getClass() == LinkedHashMap.class) {
+			Map<?, ?> map = (Map<?, ?>) value;
+			return map.isEmpty();
+		} else {
+			// Do nothing
+		}
+
+		return false;
+	}
+}

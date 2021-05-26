@@ -1,0 +1,121 @@
+package testendee.main;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import testendee.admin.AuthenticationBean;
+import testendee.admin.UserManagerBean;
+import testendee.client.IInvoker;
+import testendee.client.data.DataAdminUser;
+import testendee.client.global.Converter;
+import testendee.client.global.FileLogger;
+import testendee.client.global.SpecialFuncs;
+import testendee.client.global.TestendeeException;
+import testendee.client.main.IThreadContext;
+import testendee.client.main.Request;
+
+/**
+ * Session Bean implementation class InvokerBean
+ */
+@Stateless
+@LocalBean
+public class InvokerBean implements IInvoker {
+
+	@EJB
+	IThreadContext threadContext;
+
+	@EJB
+	UserManagerBean userManager;
+
+	@EJB
+	AuthenticationBean authen;
+
+	@PersistenceContext
+	EntityManager em;
+
+	/**
+	 * Default constructor.
+	 */
+	public InvokerBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+//	@Override
+	public Object execute() throws TestendeeException {
+		Object result = null;
+		Request request = threadContext.getCurrentRequest();
+		try {
+
+			if (request.getFuncNo() != SpecialFuncs.LOGIN && request.getFuncNo() != SpecialFuncs.CHANGE_PASS
+					&& request.getFuncNo() != SpecialFuncs.RESET_PASSWORD) {
+				checkSession(request.getSession());
+
+				String userId = authen.getSession(request.getSession()).getUserId();
+				DataAdminUser user = userManager.detailUser(userId);
+				UserInfo userInfo = Converter.cloneObject(user, UserInfo.class);
+				request.setUserInfo(userInfo);
+
+				// Check Access
+				if (!request.getSession().equalsIgnoreCase(AdminConsts.SELF_ENROLMENT_TOKEN)) {
+					checkAccess(request.getCompany(), request.getUserInfo().getUserId(), request.getFuncNo());
+				} else {
+					boolean isAllowed = false;
+					for (long allowFunc : MWConsts.SELFENROLMENT_FUNCS) {
+						if (request.getFuncNo() == allowFunc) {
+							isAllowed = true;
+							break;
+						}
+					}
+
+					if (!isAllowed || request.getChannel() != 1) {
+						global.throwEx(91001016, "FUNC_NO", request.getFuncNo());
+					}
+				}
+			}
+
+			if (request.getFuncNo() != MWCommon.FUNCTION_CHECKSESSION) {
+
+				touchSession();
+
+				result = invoke(request);
+			}
+		} catch (Exception e) {
+			Throwable cause = e;
+			FileLogger.error("Execute", String.format("func: %s, %s", request.getFuncNo(), e.getMessage()), e);
+			if (NetWareException.class.isAssignableFrom(cause.getClass())) {
+				throw (NetWareException) e;
+			} else {
+				throw new NetWareException(e);
+			}
+		} finally {
+			threadContext.setCurrentRequest(request);
+		}
+
+		return result;
+	}
+
+	public boolean checkSession(String session) throws TestendeeException {
+
+//		if (Utils.emptyOrNull(session, true)) {
+//			global.throwEx(91001013);
+//		}
+//
+//		String param = String.format("[\"%s\"]", session);
+//
+//		Request request = new Request();
+//		request.setLookup(MWConsts.CHECK_SESSION_LOOKUP);
+//		request.setFuncName(MWConsts.CHECK_SESSION_FUNC_NAME);
+//		request.setData(param);
+//		request.setInternal(true);
+//
+//		Object obj = this.invoke(request);
+//		boolean result = (boolean) obj;
+//
+//		return result;
+
+		return true;
+	}
+}

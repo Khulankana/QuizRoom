@@ -29,6 +29,7 @@ export default function NewUserForm() {
     }
 
     console.log(name, email, password);
+
     dispatch({
       type: "ADD_USER",
       user: {
@@ -56,7 +57,7 @@ export default function NewUserForm() {
             <div style={{ color: "red" }}>{error}</div>
             <form onSubmit={handleSubmit}>
               <div className="item">
-                <label for="name">
+                <label htmlFor="name">
                   <b>Нэвтрэх нэр:</b>
                 </label>
                 <br />
@@ -69,7 +70,7 @@ export default function NewUserForm() {
                   required
                 />
                 <br />
-                <label for="email">
+                <label htmlFor="email">
                   <b>Имэйл хаяг:</b>
                 </label>
                 <br />
@@ -83,7 +84,7 @@ export default function NewUserForm() {
                 />
               </div>
               <div className="item">
-                <label for="psw">
+                <label htmlFor="psw">
                   <b>Нууц үг:</b>
                 </label>
                 <br />
@@ -96,7 +97,7 @@ export default function NewUserForm() {
                   required
                 />
                 <br />
-                <label for="psw">
+                <label htmlFor="psw">
                   <b>Нууц үг давтах :</b>
                 </label>
                 <br />

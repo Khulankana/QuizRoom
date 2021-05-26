@@ -1,0 +1,67 @@
+package testendee.admin;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import testendee.client.admin.IAuthentication;
+import testendee.client.data.DataAdminUserSession;
+import testendee.client.data.LoginRequest;
+import testendee.client.data.LoginResult;
+import testendee.client.global.Converter;
+import testendee.client.global.TestendeeException;
+import testendee.ejb.entity.AdminUserSession;
+import testendee.main.ThreadContext;
+
+/**
+ * Session Bean implementation class AuthenticationBean
+ */
+@Stateless
+@LocalBean
+public class AuthenticationBean implements IAuthentication {
+
+	@EJB
+	ThreadContext threadCtx;
+
+	@EJB
+	UserManagerBean userManager;
+
+	@PersistenceContext
+	EntityManager em;
+
+	/**
+	 * Default constructor.
+	 */
+	public AuthenticationBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public LoginResult login(LoginRequest request) {
+
+		LoginResult result = new LoginResult();
+
+		result.setSession("TT_SESSION_VAL");
+
+		return result;
+
+	}
+
+	public DataAdminUserSession getCurSession() throws TestendeeException {
+		String sessionId = threadCtx.getCurrentRequest().getSession();
+
+		return getSession(sessionId);
+	}
+
+	public DataAdminUserSession getSession(String sessionId) throws TestendeeException {
+
+		AdminUserSession session = em.find(AdminUserSession.class, sessionId);
+		if (session == null) {
+			// TODO throw нэвтэрнэ үү
+		}
+
+		return Converter.cloneObject(session, DataAdminUserSession.class);
+	}
+}

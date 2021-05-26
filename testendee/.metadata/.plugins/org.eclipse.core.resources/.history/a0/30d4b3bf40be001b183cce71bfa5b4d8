@@ -1,0 +1,5 @@
+package testendee.client.quiz;
+
+public interface IQuiz {
+
+}

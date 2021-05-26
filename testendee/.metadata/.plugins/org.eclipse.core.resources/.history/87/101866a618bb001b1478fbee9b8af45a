@@ -1,0 +1,12 @@
+package testendee.client.admin;
+
+import javax.ejb.Local;
+
+import testendee.client.data.LoginRequest;
+import testendee.client.data.LoginResult;
+
+@Local
+public interface IAuthentication {
+
+	public LoginResult login(LoginRequest request);
+}

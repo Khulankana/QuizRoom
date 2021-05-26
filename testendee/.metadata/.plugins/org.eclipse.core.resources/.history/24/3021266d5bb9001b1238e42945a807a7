@@ -1,0 +1,12 @@
+package testendee.client.global;
+
+public class Converter {
+
+	public static String toStdStr(String str) {
+		if (str == null) {
+			return null;
+		}
+
+		return str.toUpperCase().trim();
+	}
+}

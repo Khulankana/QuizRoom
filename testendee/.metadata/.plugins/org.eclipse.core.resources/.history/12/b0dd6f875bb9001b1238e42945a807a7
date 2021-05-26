@@ -1,0 +1,109 @@
+package testendee.client.global;
+
+public class Converter {
+
+	public static String toStdStr(String str) {
+		if (str == null) {
+			return null;
+		}
+
+		return str.toUpperCase().trim();
+	}
+
+	public static Date parseDate(String strDate) {
+
+		Date date = null;
+
+		if (strDate == null)
+			return null;
+
+		strDate = strDate.trim();
+
+		if (strDate.length() == 0 || strDate.equals("null"))
+			return null;
+
+		try {
+			switch (strDate.trim().length()) {
+			case 0:
+				date = null;
+				break;
+			case 6:
+				date = (new SimpleDateFormat(DateFormats.DATE_6)).parse(strDate);
+				break;
+			case 8:
+				date = (new SimpleDateFormat(DateFormats.TIME_SIMPLE)).parse(strDate);
+				break;
+			case 9:
+				date = (new SimpleDateFormat(DateFormats.DATE_9_SHORT_YEAR)).parse(strDate);
+				break;
+			case 10:
+				if (strDate.substring(4, 5).equals("."))
+					date = (new SimpleDateFormat(DateFormats.DATE_DOT)).parse(strDate);
+				else if (strDate.charAt(4) == '-' && strDate.charAt(7) == '-')
+					date = (new SimpleDateFormat(DateFormats.DATE_SIMPLE)).parse(strDate);
+				else if (strDate.substring(4, 5).equals("/"))
+					date = (new SimpleDateFormat(DateFormats.DATE_SLUSH)).parse(strDate);
+				else
+					date = (new SimpleDateFormat(DateFormats.DATE_10)).parse(strDate);
+				break;
+			case 12:
+				date = (new SimpleDateFormat(DateFormats.DATE_12)).parse(strDate);
+				break;
+			case 19:
+				if (strDate.contains("T"))
+					date = (new SimpleDateFormat(DateFormats.DATE_19_T)).parse(strDate);
+				else if (strDate.substring(4, 5).equals("."))
+					date = (new SimpleDateFormat(DateFormats.DATE_DOT_TIME)).parse(strDate);
+				else
+					date = (new SimpleDateFormat(DateFormats.DATE_TIME_SIMPLE)).parse(strDate);
+				break;
+			case 20:
+				date = (new SimpleDateFormat(DateFormats.DATE_20_T_Z)).parse(strDate);
+				break;
+			case 21:
+				if (strDate.substring(4, 5).equals("."))
+					date = (new SimpleDateFormat(DateFormats.DATE_21_DOT)).parse(strDate);
+				else
+					date = (new SimpleDateFormat(DateFormats.DATE_21)).parse(strDate);
+				break;
+			case 22:
+				date = (new SimpleDateFormat(DateFormats.DATE_22)).parse(strDate);
+				break;
+			case 23:
+				if (strDate.substring(4, 5).equals("."))
+					date = (new SimpleDateFormat(DateFormats.DATE_23_DOT)).parse(strDate);
+				else if (strDate.contains("'T'")) {
+					date = (new SimpleDateFormat(DateFormats.DATE_23_S)).parse(strDate);
+				} else {
+					date = (new SimpleDateFormat(DateFormats.DATE_23)).parse(strDate);
+				}
+				break;
+			case 24:
+				date = (new SimpleDateFormat(DateFormats.DATE_24)).parse(strDate.replace('T', ' ').replace("Z", ""));
+				break;
+			case 25:
+				date = (new SimpleDateFormat(DateFormats.DATE_25_T_X)).parse(strDate);
+				break;
+			case 28:
+				date = (new SimpleDateFormat(DateFormats.DATE_28)).parse(strDate);
+				break;
+			case 29:
+				date = (new SimpleDateFormat(DateFormats.DATE_29)).parse(strDate);
+				break;
+			case 30:
+				date = (new SimpleDateFormat(DateFormats.DATE_30)).parse(strDate);
+				break;
+			case 34:
+				date = (new SimpleDateFormat(DateFormats.DATE_34)).parse(strDate);
+				break;
+			default:
+				throw new RuntimeException(String.format("Invalid DateFormat: %s!", strDate));
+			}
+
+		} catch (ParseException e) {
+			throw new RuntimeException(String.format("Invalid DateFormat: %s! %s", strDate, e.getMessage()));
+		}
+
+		return date;
+	}
+}

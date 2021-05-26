@@ -1,0 +1,31 @@
+package testendee.client.global;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class Utils {
+
+	/**
+	 * Bean-ий instance буцаана
+	 * 
+	 * @param lookup               Хайж олох нэр
+	 * @param writeErrLog          Алдааны лог бичих эсэх
+	 * @param throwNamingException Lookup олдохгүй бол Exception throw хийх эсэх
+	 * @return Bean-ий instance
+	 * @throws NetWareException
+	 */
+	public static Object doLookup(String lookup, boolean writeErrLog, boolean throwNamingException)
+			throws TestendeeException {
+		Object ret = null;
+		try {
+			ret = InitialContext.doLookup(lookup);
+		} catch (NamingException e) {
+			if (writeErrLog)
+				FileLogger.error(Utils.class, String.format("Lookup: %s, Message: %s", lookup, e.getMessage()));
+			if (throwNamingException)
+				throw new NetWareException(UtilMessage.LOOKUP_NOT_FOUND);
+		}
+		return ret;
+	}
+
+}

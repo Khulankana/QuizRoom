@@ -1,0 +1,5 @@
+package testendee.client;
+
+public interface IInvoker {
+
+}

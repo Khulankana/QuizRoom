@@ -1,0 +1,20 @@
+package testendee.main;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Singleton;
+
+/**
+ * Session Bean implementation class ThreadContext
+ */
+@Singleton
+@LocalBean
+public class ThreadContext {
+
+	/**
+	 * Default constructor.
+	 */
+	public ThreadContext() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

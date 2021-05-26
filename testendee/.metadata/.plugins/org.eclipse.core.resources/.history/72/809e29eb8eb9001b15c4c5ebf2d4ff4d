@@ -1,0 +1,258 @@
+package testendee.web;
+
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+
+import org.json.JSONArray;
+
+import testendee.client.data.LoginResult;
+import testendee.client.global.CommonError;
+import testendee.client.global.FileLogger;
+import testendee.client.global.SpecialFuncs;
+import testendee.client.global.TestendeeException;
+import testendee.client.global.Utils;
+import testendee.client.main.IInvokerRemote;
+import testendee.client.main.IThreadContextRemote;
+import testendee.client.main.Request;
+
+/**
+ * Servlet implementation class MWServlet
+ */
+@WebServlet("/front")
+public class TesetendeeServlet extends HttpServlet {
+
+	private static final long serialVersionUID = 1L;
+
+	@EJB
+	IThreadContextRemote threadCtx;
+
+	@EJB
+	IInvokerRemote invoker;
+
+	/*
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public TesetendeeServlet() {
+		super();
+	}
+
+	public void getBeans() {
+
+//		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+//		for (Entry<String, Object> beanEntry : sessionMap.entrySet()) {
+//			String beanName = beanEntry.getKey();
+//			Object bean = beanEntry.getValue();
+//			System.out.println("Bean: " + beanName + ": " + bean);
+//		}
+		try {
+
+//			HashMap<String, Object> map = (HashMap<String, Object>) toMap(new InitialContext());
+//			System.out.println("Map: " + map);
+
+			InitialContext ctx = new InitialContext();
+			NamingEnumeration<NameClassPair> list1 = ctx.list("java:global/testendee.ear/nw.admin.ejb");
+			while (list1.hasMore()) {
+				System.out.println(" >>>> " + list1.next().getName());
+			}
+
+			ctx = new InitialContext();
+			NamingEnumeration<NameClassPair> list = ctx.list("");
+			while (list.hasMore()) {
+				System.out.println("Bean: " + list.next().getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void executeBean(String lookup, String func) {
+		try {
+			Object bean = Utils.doLookup(lookup, true, true);
+
+			Class<?> cls = bean.getClass();
+			Method method = null;
+			for (Method m : cls.getDeclaredMethods()) {
+				if (m.getName().equals(func)) {
+					method = m;
+					break;
+				}
+			}
+
+			if (method == null) {
+				System.err.println("Method not found: " + func);
+			}
+
+			Class<?>[] paramTypes = method.getParameterTypes();
+			List<Object> paramValues = null;
+
+			try {
+				String strData = "[]";
+				JSONArray jarr = new JSONArray(strData);
+				paramValues = Utils.parseJSON(jarr, paramTypes);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			Object[] params = paramValues.toArray();
+
+			Object response = method.invoke(bean, params);
+			System.out.println("Response: " + response);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		getBeans();
+
+		executeBean("java:global/testendee.ear/nw.admin.ejb/AdminNewTranBean", "greet");
+		executeBean("java:global/testendee.ear/nw.admin.ejb/AdminNewTranBean!nw.admin.ejb.AdminNewTranBean", "greet");
+
+//		String hello = invoker.hello();
+//		FileLogger.info("Info", "Hello");
+//		FileLogger.debug("Debug", "Hello");
+//		FileLogger.error("Error", "Hello");
+//		FileLogger.warn("Warn", "Hello");
+		response.getWriter().append("Served at: ").append(request.getContextPath()).append("\n")
+				.append("Welcome to Testendee!");
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		this.doGet(request, response);
+
+		Request req = new Request();
+
+		try {
+
+			threadCtx.reset();
+
+			req.parse(request);
+
+			threadCtx.setCurrentRequest(req);
+
+			if (req.getStatus() != Response.Status.OK) {
+				this.writeTextResponse(response, req.getStatus(), req.getResponseMsg());
+				return;
+			}
+
+			if (req.getData().equalsIgnoreCase("healthcheck")) {
+				this.writeTextResponse(response, Response.Status.OK, "Running");
+				return;
+			}
+
+			String strResult = ""; // "{\"response\": \"ok\"}";
+
+			Object result = invoker.execute(); // hello(); // invoker.invoke(req);
+			if (result == null) {
+				strResult = "\"\"";
+			} else {
+				strResult = Utils.toJSON(result);
+			}
+
+			prepareResponse(response);
+
+			if (req.getFuncNo() == SpecialFuncs.LOGIN) {
+
+				LoginResult authRes = (LoginResult) result;
+
+				Cookie cook = new Cookie("TTSESSION", authRes.getSession());
+				authRes.setSession("");
+
+				strResult = Utils.toJSON(result);
+
+				cook.setPath("/");
+				cook.setHttpOnly(true);
+				cook.setMaxAge(1000000);
+				response.addCookie(cook);
+			}
+
+			response.getWriter().write(strResult);
+			response.getWriter().flush();
+
+		} catch (Exception e) {
+
+			String msg = e.getMessage();
+			if (msg == null) {
+				msg = "";
+			}
+			if (e instanceof TestendeeException) {
+				TestendeeException nwex = ((TestendeeException) e);
+				msg = nwex.getCode() + " - " + nwex.getMessage();
+			} else {
+				Throwable dbEx = Utils.findDbEx(e);
+				if (dbEx != null) {
+
+					FileLogger.error("Database", String.format("func: %s, %s", req.getFuncNo(), dbEx.getMessage()),
+							new Exception(dbEx));
+
+					try {
+						TestendeeException ex = new TestendeeException(CommonError.DATABASE_ERROR);
+						ex.prepareDbError(dbEx.getMessage());
+						// TODO ex.setMessage(global.getMsgWithNewTran(ex.getCode()));
+
+						msg = ex.getMessage();
+					} catch (Exception e1) {
+
+					}
+				} else {
+
+					FileLogger.error("MWServlet", String.format("func: %s, %s", req.getFuncNo(), e.getMessage()),
+							new Exception(e));
+
+					msg = String.format("%s - %s", CommonError.SYSTEM_ERROR,
+							"Системд алдаа гарлаа. �?дминд хандана уу!");
+				}
+			}
+			this.writeTextResponse(response, Response.Status.NOT_IMPLEMENTED, msg);
+		} finally {
+			try {
+				threadCtx.release();
+			} catch (Exception e) {
+
+			}
+		}
+	}
+
+	private boolean prepareResponse(HttpServletResponse response) throws IOException {
+
+		response.setContentType("application/json;charset=UTF-8");
+		response.setHeader("X-Frame-Options", "SAMEORIGIN");
+
+		return true;
+	}
+
+	private void writeTextResponse(HttpServletResponse response, Response.Status status, String data)
+			throws IOException {
+		response.setContentType("text/plain;charset=UTF-8");
+		response.setStatus(status.getStatusCode());
+		response.getWriter().write(data);
+		response.getWriter().flush();
+	}
+
+}

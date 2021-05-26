@@ -1,0 +1,20 @@
+package testendee.main;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+/**
+ * Session Bean implementation class MainBean
+ */
+@Stateless
+@LocalBean
+public class MainBean {
+
+    /**
+     * Default constructor. 
+     */
+    public MainBean() {
+        // TODO Auto-generated constructor stub
+    }
+
+}

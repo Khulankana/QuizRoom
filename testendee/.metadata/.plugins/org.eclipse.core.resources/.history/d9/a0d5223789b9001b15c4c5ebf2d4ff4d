@@ -1,0 +1,5 @@
+package testendee.client.main;
+
+public interface IThreadContext {
+
+}

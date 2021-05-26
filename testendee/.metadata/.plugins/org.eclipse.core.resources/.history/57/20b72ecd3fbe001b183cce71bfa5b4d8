@@ -1,0 +1,28 @@
+package testendee.quiz;
+
+import java.util.List;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import testendee.client.data.DataQuizRoom;
+
+/**
+ * Session Bean implementation class QuizBean
+ */
+@Stateless
+@LocalBean
+public class QuizBean {
+
+	/**
+	 * Default constructor.
+	 */
+	public QuizBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public List<DataQuizRoom> selectQuizRoom() {
+
+	}
+
+}

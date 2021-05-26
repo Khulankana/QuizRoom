@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;testendee.client.data.QuizRoom&apos; to &apos;DataQuizRoom&apos;&#x0D;&#x0A;- Original project: &apos;testendee.client&apos;&#x0D;&#x0A;- Original element: &apos;testendee.client.data.QuizRoom&apos;&#x0D;&#x0A;- Renamed element: &apos;testendee.client.data.DataQuizRoom&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;QuizRoom&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/appClientModule=/optional=/true=/=/maven.pomderived=/true=/&lt;testendee.client.data{QuizRoom.java[QuizRoom" matchStrategy="1" name="DataQuizRoom" qualified="false" references="true" similarDeclarations="false" stamp="1622046620726" textual="false" version="1.0"/>
+</session>

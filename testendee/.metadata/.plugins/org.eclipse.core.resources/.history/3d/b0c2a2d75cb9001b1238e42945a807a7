@@ -1,0 +1,420 @@
+package testendee.client.global;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+public class Utils {
+
+	public static String SERVER_BIN_PROP_NAME = "server.bin";
+	public static String SERVER_HOME_PROP_NAME = "server.home";
+	public static String SERVER_USER_DIR_PROP_NAME = "user.dir";
+
+	public static final String CLASS_NAME_DATE = "Date";
+
+	/**
+	 * Bean-ий instance буцаана
+	 * 
+	 * @param lookup               Хайж олох нэр
+	 * @param writeErrLog          Алдааны лог бичих эсэх
+	 * @param throwNamingException Lookup олдохгүй бол Exception throw хийх эсэх
+	 * @return Bean-ий instance
+	 * @throws NetWareException
+	 */
+	public static Object doLookup(String lookup, boolean writeErrLog, boolean throwNamingException)
+			throws TestendeeException {
+		Object ret = null;
+		try {
+			ret = InitialContext.doLookup(lookup);
+		} catch (NamingException e) {
+			if (writeErrLog)
+				FileLogger.error(Utils.class, String.format("Lookup: %s, Message: %s", lookup, e.getMessage()));
+			if (throwNamingException)
+				throw new TestendeeException(TestendeeError.LOOKUP_ERROR);
+		}
+		return ret;
+	}
+
+	/**
+	 * @return App server-ийн bin фолдерын замыг буцаана
+	 */
+	public static String getServerBinDir() {
+
+		String dir = System.getProperty(SERVER_BIN_PROP_NAME, "");
+		if (emptyOrNull(dir))
+			dir = System.getProperty(SERVER_HOME_PROP_NAME, "");
+		else
+			return dir;
+
+		try {
+			if (emptyOrNull(dir)) {
+				dir = System.getProperty(SERVER_USER_DIR_PROP_NAME, "");
+			} else {
+				dir = dir + File.separator + "bin";
+
+				System.setProperty(SERVER_BIN_PROP_NAME, dir);
+
+				return dir;
+			}
+
+			if (dir.endsWith("sbin")) // modules\system\layers\base\native\sbin
+			{
+				File f = new File(dir);
+				// Up to 3 times
+				f = f.getParentFile();
+				f = f.getParentFile();
+				f = f.getParentFile();
+
+				dir = f.getAbsolutePath();
+
+				dir += File.separator + "bin";
+			}
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			dir = System.getProperty(SERVER_USER_DIR_PROP_NAME, "");
+
+		}
+
+		System.setProperty(SERVER_BIN_PROP_NAME, dir);
+
+		return dir;
+	}
+
+	/**
+	 * Өгөгдсөн утгыг null эсвэл хоосон эсэхийг шалгана. String, List, ArrayList
+	 * төрлийн утгууд дээр хэрэглэгдэнэ
+	 * 
+	 * @param value Утга
+	 * @return null эсвэл хоосон бол <b>true</b> эсрэг тохиолдолд <b>false</b>
+	 *         буцаана
+	 */
+	public static boolean emptyOrNull(Object value) {
+		return emptyOrNull(value, false);
+	}
+
+	/**
+	 * Өгөгдсөн утгыг null эсвэл хоосон эсэхийг шалгана. String, List, ArrayList
+	 * төрлийн утгууд дээр хэрэглэгдэнэ
+	 * 
+	 * @param value             Утга
+	 * @param ignoreWhiteSpaces Хоосон зайнуудыг (tab, enter, space г.м) "" гэж үзэх
+	 *                          эсэх
+	 * @return null эсвэл хоосон бол <b>true</b> эсрэг тохиолдолд <b>false</b>
+	 *         буцаана
+	 */
+	public static boolean emptyOrNull(Object value, boolean ignoreWhiteSpaces) {
+		if (value == null)
+			return true;
+		if (value.getClass() == String.class) {
+			String str = String.valueOf(value);
+			if (ignoreWhiteSpaces)
+				str = str.replaceAll("\\s", "");
+			if (str.equals(""))
+				return true;
+		} else if (value.getClass() == List.class || value.getClass() == ArrayList.class
+				|| value.getClass() == LinkedList.class) {
+			List<?> list = (List<?>) value;
+			return list.isEmpty();
+		} else if (value.getClass() == java.util.Vector.class) {
+			java.util.Vector<?> vector = (java.util.Vector<?>) value;
+			return vector.isEmpty();
+		} else if (value.getClass() == Map.class || value.getClass() == HashMap.class
+				|| value.getClass() == LinkedHashMap.class) {
+			Map<?, ?> map = (Map<?, ?>) value;
+			return map.isEmpty();
+		} else {
+			// Do nothing
+		}
+
+		return false;
+	}
+
+	public static String fillLeft(Object obj, char ch, int len) {
+
+		String str = String.valueOf(obj);
+
+		while (str.length() < len)
+			str = String.valueOf(ch) + str;
+
+		return str;
+	}
+
+	// Баруун талаас нь дүүргэх
+	public static String fillRight(Object obj, char ch, int len) {
+
+		StringBuilder str = new StringBuilder(String.valueOf(obj));
+
+		while (str.length() < len)
+			str.append(String.valueOf(ch));
+
+		return str.toString();
+	}
+
+	private static String pid = null;
+
+	public static String getProcId() {
+		try {
+			if (null == pid) {
+				pid = ManagementFactory.getRuntimeMXBean().getName();
+			}
+		} catch (Exception ex) {
+			FileLogger.error(Utils.class, ex.getMessage(), ex);
+		}
+		return pid;
+	}
+
+	public static String newLine() {
+		return System.getProperty("line.separator");
+	}
+
+	/**
+	 * Лог бичихэд тохиромжтой байдлаар exception-ий мессежийг буцаах
+	 * 
+	 * @param e Exception
+	 * @return Лог руу бичих мессеж
+	 */
+	public static String getExceptionTrace(Exception e) {
+		return getExceptionTrace(e, false);
+	}
+
+	public static Throwable getCause(Exception ex) {
+		Throwable x = ex;
+		while (null != x.getCause()) {
+			x = x.getCause();
+		}
+		return x;
+	}
+
+	/**
+	 * Баазын exception агуулсан эсэхийг шалгаж, байвал буцаах
+	 * 
+	 * @param thr Throwable
+	 * @return Баазын exception. Байхгүй бол null буцаана
+	 */
+	public static Throwable findDbEx(Throwable thr) {
+		Throwable dbThr = null;
+		Throwable x = thr;
+		do {
+			if (null == x)
+				break;
+			if (x.getMessage() != null && x.getMessage().contains("ORA-")) {
+				dbThr = x;
+				break;
+			}
+			x = x.getCause();
+		} while (null != x);
+		return dbThr;
+	}
+
+	/**
+	 * Лог бичихэд тохиромжтой байдлаар exception-ий мессежийг буцаах
+	 * 
+	 * @param e              Exception
+	 * @param fullStackTrace Бүх stack trace-н мэдээллийг авах эсэх
+	 * @return Лог руу бичих мессеж
+	 */
+	public static String getExceptionTrace(Exception e, boolean fullStackTrace) {
+
+		String strCause = " Cause: ";
+		String formatStr = " >> {0} ({1}): {2}()";
+		StringBuilder result = new StringBuilder();
+
+		Throwable dbEx = findDbEx(e);
+		if (null != dbEx) {
+			result.append(strCause).append(dbEx.getMessage()).append(newLine());
+		}
+
+		Throwable cause = getCause(e);
+		if (null == cause)
+			cause = e;
+
+		result.append(strCause).append(cause.getMessage()).append(newLine());
+
+		StackTraceElement[] sts = cause.getStackTrace();
+		boolean dot = false;
+		boolean added = false;
+		StackTraceElement lastStack = null;
+		for (StackTraceElement st : sts) {
+			lastStack = st;
+			String c = st.getClassName();
+			if (fullStackTrace || (null != c && (c.contains("netware"))) || (null != c && (c.contains("nw.")))) {
+				result.append(strFormat(formatStr, c, st.getLineNumber(), st.getMethodName())).append(newLine());
+				dot = false;
+				added = true;
+			} else if (!dot) {
+				result.append("...").append(newLine());
+				dot = true;
+			} else {
+				// Do nothing
+			}
+		}
+
+		if (!added && lastStack != null) {
+			result.append(strFormat(formatStr, lastStack.getClassName(), lastStack.getLineNumber(),
+					lastStack.getMethodName())).append(newLine());
+		}
+
+		return result.toString();
+
+	}
+
+	public static String strFormat(String format, Object... args) {
+
+		String result = format;
+
+		for (int i = 0; i < args.length; i++) {
+			result = result.replace("{" + i + "}", Converter.toStr(args[i]));
+		}
+
+		format = result;
+		int begIx;
+		int endIx;
+		int b;
+		String strTmp;
+		String ptrn;
+		String n;
+		String value;
+		String valFormat;
+		for (int i = 0; i < format.length(); i++) {
+			if (format.charAt(i) == '{') {
+				begIx = i;
+				strTmp = format.substring(begIx);
+				endIx = strTmp.indexOf('}');
+				if (endIx < 0)
+					break;
+
+				ptrn = strTmp.substring(1, endIx);
+				b = ptrn.indexOf(':');
+
+				n = ptrn.substring(0, b);
+				if (ptrn.length() <= b + 1)
+					valFormat = "";
+				else
+					valFormat = ptrn.substring(b + 1);
+
+				if (emptyOrNull(n))
+					continue;
+
+				boolean isNotNumber = false;
+				for (int q = 0; q < n.length(); q++) {
+					if (n.charAt(q) < 48 || n.charAt(q) > 57) {
+						isNotNumber = true;
+						break;
+					}
+				}
+				if (isNotNumber)
+					continue;
+
+				if (args[Integer.parseInt(n)] != null && isDateObject(args[Integer.parseInt(n)])) {
+					value = Converter.toDateTimeStr((Date) args[Integer.parseInt(n)]);
+				} else {
+					value = Converter.toStr(args[Integer.parseInt(n)]);
+				}
+
+				StringBuilder tmp = new StringBuilder("");
+				StringBuilder tmpValue = new StringBuilder("");
+				Date dt = Converter.parseDate(value);
+				String y = fillLeft(DateUtils.getYear(dt), '0', 4);
+				String mo = fillLeft(DateUtils.getMonth(dt), '0', 2);
+				String d = fillLeft(DateUtils.getDayOfMonth(dt), '0', 2);
+				String h = fillLeft(DateUtils.getHour(dt), '0', 2);
+				String hd = fillLeft(DateUtils.getHourOfDay(dt), '0', 2);
+				String m = fillLeft(DateUtils.getMinute(dt), '0', 2);
+				String s = fillLeft(DateUtils.getSecond(dt), '0', 2);
+
+				for (int z = 0; z < valFormat.length(); z++) {
+
+					if (tmp.length() > 0) {
+						if (tmp.charAt(0) == valFormat.charAt(z)) {
+							tmp.append(valFormat.charAt(z));
+						} else {
+							if (tmp.toString().toUpperCase().charAt(0) == 'Y') {
+								tmpValue.append(y.substring(y.length() - tmp.length()));
+							} else if (tmp.charAt(0) == 'M') {
+								tmpValue.append(mo.substring(mo.length() - tmp.length()));
+							} else if (tmp.toString().toUpperCase().charAt(0) == 'D') {
+								tmpValue.append(d.substring(d.length() - tmp.length()));
+							} else if (tmp.charAt(0) == 'h') {
+								tmpValue.append(h.substring(h.length() - tmp.length()));
+							} else if (tmp.charAt(0) == 'H') {
+								tmpValue.append(hd.substring(hd.length() - tmp.length()));
+							} else if (tmp.charAt(0) == 'm') {
+								tmpValue.append(m.substring(m.length() - tmp.length()));
+							} else if (tmp.toString().toUpperCase().charAt(0) == 'S') {
+								tmpValue.append(s.substring(s.length() - tmp.length()));
+							} else {
+								tmpValue.append(tmp);
+							}
+
+							tmp = new StringBuilder("");
+							tmp.append(valFormat.charAt(z));
+						}
+					} else {
+						tmp.append(valFormat.charAt(z));
+					}
+				}
+
+				if (tmp.length() > 0) {
+					if (tmp.toString().toUpperCase().charAt(0) == 'Y') {
+						tmpValue.append(y.substring(y.length() - tmp.length()));
+					} else if (tmp.charAt(0) == 'M') {
+						tmpValue.append(mo.substring(mo.length() - tmp.length()));
+					} else if (tmp.toString().toUpperCase().charAt(0) == 'D') {
+						tmpValue.append(d.substring(d.length() - tmp.length()));
+					} else if (tmp.charAt(0) == 'h') {
+						tmpValue.append(h.substring(h.length() - tmp.length()));
+					} else if (tmp.charAt(0) == 'H') {
+						tmpValue.append(hd.substring(hd.length() - tmp.length()));
+					} else if (tmp.charAt(0) == 'm') {
+						tmpValue.append(m.substring(m.length() - tmp.length()));
+					} else if (tmp.toString().toUpperCase().charAt(0) == 'S') {
+						tmpValue.append(s.substring(s.length() - tmp.length()));
+					} else {
+						tmpValue.append(tmp);
+					}
+				}
+
+				String tmp2 = "";
+				if (endIx + 1 < format.length())
+					tmp2 = format.substring(begIx + endIx + 1);
+				format = format.substring(0, begIx) + tmpValue + tmp2;
+
+				i += endIx - begIx - 1;
+
+			}
+		}
+
+		result = format;
+
+		return result;
+
+	}
+
+	public static boolean isDateObject(Object obj) {
+
+		if (obj == null)
+			return false;
+
+		return isDate(obj.getClass());
+	}
+
+	public static boolean isDate(String clsName) {
+		return clsName.contains(UtilConstants.CLASS_NAME_DATE);
+	}
+
+	public static <T> boolean isDate(Class<T> cls) {
+		String clsName = cls.getName();
+		return clsName.contains(UtilConstants.CLASS_NAME_DATE);
+	}
+}

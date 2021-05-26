@@ -1,0 +1,8 @@
+package testendee.client.global;
+
+public class TestendeeError {
+
+	public static final int SYSTEM_ERROR = 9000;
+	public static final int LOOKUP_ERROR = 9001;
+
+}

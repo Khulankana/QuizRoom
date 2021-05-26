@@ -1,0 +1,12 @@
+package testendee.client;
+
+import javax.ejb.Remote;
+
+import testendee.client.global.TestendeeException;
+
+@Remote
+public interface IInvoker {
+
+	public Object execute() throws TestendeeException;
+
+}

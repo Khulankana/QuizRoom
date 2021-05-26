@@ -6,15 +6,18 @@ import reportWebVitals from "./reportWebVitals";
 import UserContextProvider from "../src/contexts/UserContext";
 import TestContextProvider from "./contexts/TestContext";
 import QuizContextProvider from "./contexts/QuizContext";
+import UserLoginContextProvider from "./contexts/UserLoginContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <UserContextProvider>
-      <TestContextProvider>
-        <QuizContextProvider>
-          <App />
-        </QuizContextProvider>
-      </TestContextProvider>
+      <UserLoginContextProvider>
+        <TestContextProvider>
+          <QuizContextProvider>
+            <App />
+          </QuizContextProvider>
+        </TestContextProvider>
+      </UserLoginContextProvider>
     </UserContextProvider>
   </React.StrictMode>,
   document.getElementById("root")

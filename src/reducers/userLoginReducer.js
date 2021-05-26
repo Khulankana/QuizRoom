@@ -1,16 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
 
-export const userloginReducer = (state, action) => {
+export const userLoginReducer = (state, action) => {
   switch (action.type) {
     case "ADD_LOGIN_USER":
       return [
         ...state,
         {
-          name: action.loginUser.name,
-          password: action.loginUser.password,
+          loginName: action.loginUser.loginName,
+          loginPassword: action.loginUser.loginPassword,
           id: uuidv4(),
         },
       ];
+
     default:
       return state;
   }

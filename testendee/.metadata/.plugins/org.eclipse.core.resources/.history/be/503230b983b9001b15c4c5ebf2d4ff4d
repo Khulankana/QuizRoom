@@ -1,0 +1,8 @@
+package testendee.client.main;
+
+public class Snippet {
+	public static void main(String[] args) {
+		testendee.client
+	}
+}
+

@@ -1,0 +1,30 @@
+package testendee.admin;
+
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import testendee.client.data.DataAdminUserSession;
+import testendee.main.ThreadContext;
+
+/**
+ * Session Bean implementation class AuthenticationBean
+ */
+@Stateless
+@LocalBean
+public class AuthenticationBean {
+
+	@EJB
+	ThreadContext threadCtx;
+
+	/**
+	 * Default constructor.
+	 */
+	public AuthenticationBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public DataAdminUserSession getCurSession() {
+
+	}
+}

@@ -1,0 +1,5 @@
+package testendee.client.admin;
+
+public interface IAuthentication {
+
+}

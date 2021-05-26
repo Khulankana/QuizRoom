@@ -1,0 +1,16 @@
+package testendee.client.main;
+
+@Remote
+public interface IThreadContextRemote {
+
+	public Request getCurrentRequest();
+
+	public void setCurrentRequest(Request request);
+
+	public String reset();
+
+	public void release();
+
+	public int getJobSize();
+
+}

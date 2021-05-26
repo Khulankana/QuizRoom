@@ -1,0 +1,37 @@
+package testendee.main;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import testendee.client.data.DataAdminFunc;
+import testendee.client.global.Converter;
+import testendee.client.global.TestendeeException;
+import testendee.ejb.entity.AdminFunc;
+
+/**
+ * Session Bean implementation class MainBean
+ */
+@Stateless
+@LocalBean
+public class MainBean {
+
+	@PersistenceContext
+	EntityManager em;
+
+	/**
+	 * Default constructor.
+	 */
+	public MainBean() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public DataAdminFunc getFunc(int funcNo) throws TestendeeException {
+		AdminFunc func = em.find(AdminFunc.class, funcNo);
+		if (func == null) {
+			// TODO throw not found exception
+		}
+
+	}
+}

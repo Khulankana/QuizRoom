@@ -1,0 +1,7 @@
+package testendee.client.global;
+
+public class SpecialFuncs {
+
+	public static final int LOGIN = 1000;
+	public static final int LOGOUT = 1001;
+}

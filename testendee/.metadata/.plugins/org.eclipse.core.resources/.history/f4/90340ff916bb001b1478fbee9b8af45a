@@ -1,0 +1,15 @@
+package testendee.client.main;
+
+import javax.ejb.Local;
+
+import testendee.client.global.TestendeeException;
+import testendee.client.main.Request;
+
+@Local
+public interface IInvoker {
+
+	public Object execute() throws TestendeeException;
+
+	public Object invoke(Request request) throws TestendeeException;
+
+}
